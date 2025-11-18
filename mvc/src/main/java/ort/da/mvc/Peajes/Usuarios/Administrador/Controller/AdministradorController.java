@@ -68,4 +68,15 @@ public class AdministradorController implements Observador {
         return new Respuesta("sesionesActivas", Fachada.getInstancia().getSesionesActivasInfo()); //   CAMBIAR ESTO
     }
 
+<<<<<<< HEAD
+    @GetMapping("/cambiarEstado")
+    public Respuesta cambiarEstado(@SessionAttribute(name = "administrador", required = false) Administrador a) {
+        if (a == null) {
+            return new Respuesta("usuarioNoAutenticado", "index.html");
+        }
+        return new Respuesta("redirigirCambiarEstado", "cambiarEstadoPropietario.html");
+    }
+
+=======
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
 }

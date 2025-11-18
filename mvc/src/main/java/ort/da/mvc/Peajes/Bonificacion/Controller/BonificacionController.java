@@ -17,12 +17,22 @@ import ort.da.mvc.Peajes.Bonificacion.Bonificacion;
 import ort.da.mvc.Peajes.Bonificacion.BonificacionExonerada;
 import ort.da.mvc.Peajes.Bonificacion.BonificacionFrecuente;
 import ort.da.mvc.Peajes.Bonificacion.BonificacionTrabajdor;
+<<<<<<< HEAD
+import ort.da.mvc.Peajes.Bonificacion.DTO.BonificacionDTO;
+=======
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
 import ort.da.mvc.Peajes.Bonificacion.DTO.BonificacionDisponibleDTO;
 import ort.da.mvc.Peajes.Peaje.PuestoPeaje;
 import ort.da.mvc.Peajes.Peaje.DTO.PeajeDTO;
 import ort.da.mvc.Peajes.Usuarios.Administrador.Administrador;
 import ort.da.mvc.Peajes.Usuarios.Propietario.DTO.PropietarioDTO;
+<<<<<<< HEAD
+import ort.da.mvc.Peajes.Usuarios.Propietario.DTO.PropietarioInfoDTO;
 import ort.da.mvc.Peajes.Usuarios.Propietario.Propietario;
+import ort.da.mvc.Peajes.Notificacion.Notificacion;
+=======
+import ort.da.mvc.Peajes.Usuarios.Propietario.Propietario;
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
 import ort.da.mvc.Peajes.Utils.Respuesta;
 import ort.da.mvc.Peajes.Utils.Exceptions.BonificacionException;
 import ort.da.mvc.Peajes.Utils.Exceptions.PuestoException;
@@ -81,6 +91,25 @@ public class BonificacionController {
             Propietario p = Fachada.getInstancia().getPropietarioByCI(ci);
 
             List<Bonificacion> bonis = Fachada.getInstancia().getBonificacionesDePropietario(p);
+<<<<<<< HEAD
+            List<BonificacionDTO> bDTO = new ArrayList<>();
+            for (Bonificacion b : bonis) {
+                bDTO.add(new BonificacionDTO(b));
+            }
+
+            PropietarioInfoDTO infoPropietario = new PropietarioInfoDTO(p);
+            
+            return Respuesta.lista(
+                new Respuesta("BonificacionesAsignadas", bDTO), 
+                new Respuesta("PropietarioInfo", infoPropietario)
+            );
+        } catch (UsuarioException e) {
+            return Respuesta.lista(new Respuesta("error", e.getMessage()));
+        } catch (NumberFormatException e) {
+            return Respuesta.lista(new Respuesta("error", "Formato de cédula inválido"));
+        } catch (Exception e) {
+            return Respuesta.lista(new Respuesta("error", "Error al buscar propietario: " + e.getMessage()));
+=======
             List<ort.da.mvc.Peajes.Bonificacion.DTO.BonificacionDTO> bDTO = new ArrayList<>();
             for (Bonificacion b : bonis) {
                 bDTO.add(new ort.da.mvc.Peajes.Bonificacion.DTO.BonificacionDTO(b));
@@ -89,10 +118,33 @@ public class BonificacionController {
             return Respuesta.lista(new Respuesta("BonificacionesAsignadas", bDTO), new Respuesta("PropietarioInfo", p.toString()));
         } catch (UsuarioException e) {
             return Respuesta.lista(new Respuesta("error", e.getMessage()));
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
     }
 
     @PostMapping("/asignarBonificacion")
+<<<<<<< HEAD
+    public List<Respuesta> asignarBonificacion(
+            @RequestParam String cedula, 
+            @RequestParam String idBonificacion, 
+            @RequestParam String puesto, 
+            @RequestParam(required = false) String fechaInicio, 
+            @RequestParam(required = false) String hora) {
+
+        try {
+            int ci = Integer.parseInt(cedula);
+            Propietario p = Fachada.getInstancia().getPropietarioByCI(ci);
+
+            // Verificar que el propietario no esté deshabilitado
+            p.verificarDeshabilitado();
+
+            // Obtener bonificación de las definidas
+            int idx = Integer.parseInt(idBonificacion);
+            List<Bonificacion> definidas = Fachada.getInstancia().getServicioBonificacion().getDefinidas();
+            
+            if (idx < 0 || idx >= definidas.size()) {
+                throw new BonificacionException("Bonificación no encontrada");
+=======
     public List<Respuesta> asignarBonificacion(@RequestParam String cedula, @RequestParam(required = false) String idBonificacion, @RequestParam(required = false) String puesto, @RequestParam(required = false) String fechaInicio, @RequestParam(required = false) String hora) {
 
         try {
@@ -116,15 +168,27 @@ public class BonificacionController {
             List<Bonificacion> definidas = Fachada.getInstancia().getServicioBonificacion().getDefinidas();
             if (idx < 0 || idx >= definidas.size()) {
                 return Respuesta.lista(new Respuesta("error", "Bonificación no encontrada"));
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
             }
 
             Bonificacion plantilla = definidas.get(idx);
 
+<<<<<<< HEAD
+            // Obtener puesto
+            PuestoPeaje pSeleccionado = Fachada.getInstancia().getPuestoNombre(puesto);
+
+            // TODO: parsear fechaInicio + hora si se proporciona
+            Date fechaAsignacion = new Date(System.currentTimeMillis());
+
+            // Crear nueva bonificación del mismo tipo que la plantilla
+            Bonificacion nueva;
+=======
             // Get puesto
             PuestoPeaje pSeleccionado = Fachada.getInstancia().getPuestoNombre(puesto);
 
             Bonificacion nueva;
             // Create same subclass
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
             if (plantilla instanceof BonificacionExonerada) {
                 nueva = new BonificacionExonerada(pSeleccionado, plantilla.getNombre(), fechaAsignacion);
             } else if (plantilla instanceof BonificacionFrecuente) {
@@ -132,16 +196,65 @@ public class BonificacionController {
             } else if (plantilla instanceof BonificacionTrabajdor) {
                 nueva = new BonificacionTrabajdor(pSeleccionado, plantilla.getNombre(), fechaAsignacion);
             } else {
+<<<<<<< HEAD
+                nueva = plantilla;
+            }
+
+            // Agregar bonificación (aquí se valida en el dominio)
+=======
                 nueva = plantilla; // fallback (shouldn't happen)
             }
 
             // Verificar si el propietario esta deshabilitado
             p.verificarDeshabilitado();
 
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
             p.agregarBonificacion(nueva);
 
             return Respuesta.lista(new Respuesta("BonificacionAsignada", "Bonificación asignada con éxito."));
 
+<<<<<<< HEAD
+        } catch (UsuarioException | PuestoException | BonificacionException e) {
+            return Respuesta.lista(new Respuesta("error", e.getMessage()));
+        } catch (NumberFormatException e) {
+            return Respuesta.lista(new Respuesta("error", "Formato de datos inválido"));
+        } catch (Exception e) {
+            return Respuesta.lista(new Respuesta("error", "Error al asignar bonificación: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/cambiarEstadoPropietario")
+    public List<Respuesta> cambiarEstadoPropietario(
+            @RequestParam String cedula,
+            @RequestParam String nuevoEstado) {
+        
+        try {
+            int ci = Integer.parseInt(cedula);
+            Propietario p = Fachada.getInstancia().getPropietarioByCI(ci);
+            
+            // Guardar estado actual antes del cambio
+            String estadoActual = p.getEstado();
+            
+            // Cambiar estado
+            p.cambiarEstado(nuevoEstado);
+            
+            // Registrar notificación al propietario
+            String mensajeNotificacion = "Se ha cambiado el estado de tu cuenta. Estado anterior: " + 
+                                        estadoActual + ". Estado actual: " + nuevoEstado + ".";
+            Notificacion notificacion = new Notificacion(mensajeNotificacion, new Date());
+            p.setNotificacion(notificacion);
+            
+            return Respuesta.lista(
+                new Respuesta("ResultadoCambioEstado", "Estado cambiado exitosamente a: " + nuevoEstado)
+            );
+            
+        } catch (UsuarioException e) {
+            return Respuesta.lista(new Respuesta("error", e.getMessage()));
+        } catch (NumberFormatException e) {
+            return Respuesta.lista(new Respuesta("error", "Formato de cédula inválido"));
+        } catch (Exception e) {
+            return Respuesta.lista(new Respuesta("error", "Error al cambiar estado: " + e.getMessage()));
+=======
         } catch (UsuarioException e) {
             return Respuesta.lista(new Respuesta("error", e.getMessage()));
         } catch (PuestoException e) {
@@ -150,6 +263,7 @@ public class BonificacionController {
             return Respuesta.lista(new Respuesta("error", e.getMessage()));
         } catch (Exception e) {
             return Respuesta.lista(new Respuesta("error", e.getMessage()));
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
     }
 

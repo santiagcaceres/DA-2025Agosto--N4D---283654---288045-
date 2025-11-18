@@ -87,11 +87,25 @@ public class Propietario {
     // #region agregarBonificacion
 
     public void agregarBonificacion(Bonificacion bonificacion) throws BonificacionException {
+<<<<<<< HEAD
+        verificarBonificacionNoNula(bonificacion);
+        verificarBonificacion(bonificacion);
+        bonificaciones.add(bonificacion);
+    }
+
+    private void verificarBonificacionNoNula(Bonificacion bonificacion) throws BonificacionException {
+        if (bonificacion == null) {
+            throw new BonificacionException("La bonificación no puede ser nula");
+        }
+        if (bonificacion.getPuesto() == null) {
+            throw new BonificacionException("Debe especificar un puesto");
+=======
         try {
             verificarBonificacion(bonificacion);
             bonificaciones.add(bonificacion);
         } catch (BonificacionException e) {
             throw e;
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
     }
 
@@ -99,11 +113,18 @@ public class Propietario {
         for (Bonificacion b : bonificaciones) {
             if (b.equals(bonificacion)) {
                 throw new BonificacionException("La bonificación ya existe para este propietario.");
+<<<<<<< HEAD
+            }
+            if (b.getPuesto() == bonificacion.getPuesto()) {
+                throw new BonificacionException("Ya existe una bonificación para este puesto.");
+            }
+=======
             } else {
             if (b.getPuesto() == bonificacion.getPuesto()) {
                 throw new BonificacionException("Ya existe una bonificación para este puesto.");
             }
             }
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
     }
 
@@ -148,8 +169,13 @@ public class Propietario {
     }
 
     public void verificarDeshabilitado() throws UsuarioException {
+<<<<<<< HEAD
+        if (estado.getEstado().equals("deshabilitado")) {
+            throw new UsuarioException("El propietario está deshabilitado y no puede recibir bonificaciones");
+=======
         if (estado.getEstado() == "deshabilitado") {
             throw new UsuarioException("Usuario deshabilitado, no puede ingresar al sistema");
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
     }
 
@@ -165,12 +191,45 @@ public class Propietario {
     }
 
     public void verificarSuspension() throws UsuarioException {
+<<<<<<< HEAD
+        if ("suspendido".equals(estado.getEstado()))
+=======
         if (estado.getEstado() == "suspendido")
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
             throw new UsuarioException("El propietario esta suspendido, no puede realizar transitos");
     }
 
     // #endregion
 
+<<<<<<< HEAD
+    // #region Cambiar estado
+
+    public void cambiarEstado(String nuevoEstado) throws UsuarioException {
+        validarEstado(nuevoEstado);
+        
+        String estadoActual = this.estado.getEstado();
+        
+        if (estadoActual.equals(nuevoEstado)) {
+            throw new UsuarioException("El propietario ya está en estado " + nuevoEstado);
+        }
+        
+        this.estado = new EstadoPropietario(nuevoEstado) {};
+    }
+
+    private void validarEstado(String estado) throws UsuarioException {
+        if (estado == null || estado.trim().isEmpty()) {
+            throw new UsuarioException("El estado no puede estar vacío");
+        }
+        
+        if (!estado.equals("habilitado") && !estado.equals("deshabilitado") && !estado.equals("suspendido")) {
+            throw new UsuarioException("Estado inválido. Debe ser: habilitado, deshabilitado o suspendido");
+        }
+    }
+
+    // #endregion
+
+=======
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
     @Override
     public String toString() {
         return this.getNombre() + " - CI: " + this.getCi() + " - Estado: " + this.getEstado() + " - Saldo Actual: "

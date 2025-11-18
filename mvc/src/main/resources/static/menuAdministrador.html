@@ -128,7 +128,15 @@
         // Funciones de navegación: ajusta las rutas según tu backend
         function irCambiarEstado() {
             // Puede ser una vista que permita buscar propietario y cambiar su estado
+<<<<<<< HEAD
+            submit("/administrador/cambiarEstado", "", 'GET');
+        }
+
+        function mostrar_redirigirCambiarEstado(pagina) {
+            window.location.href = pagina;
+=======
             window.location.href = '/administrador/cambiarEstado';
+>>>>>>> 75d07e40df1e97477e3f35a449e5ac5559f9757b
         }
 
         function irAsignarBonificaciones() {

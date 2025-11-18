@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cambiar Estado de Propietario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 24px;
+            background: #f8f9fa
+        }
+
+        .card-shadow {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08)
+        }
+
+        .result-box {
+            white-space: pre-line;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            min-height: 60px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="vistaWeb.js"></script>
+    <script src="utilesVista.js"></script>
+
+    <div class="container">
+        <h3 class="mb-4">CU: Cambiar estado de propietario</h3>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card card-shadow">
+                    <div class="card-body">
+                        <h6 class="section-title">Cambiar estado de propietario</h6>
+                        
+                        <form id="cambiarEstadoForm" onsubmit="cambiarEstado(event);">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="cedulaInput" class="form-label">Cédula de identidad</label>
+                                        <div class="input-group">
+                                            <input id="cedulaInput" name="cedula" class="form-control" placeholder="Ingrese cédula" />
+                                            <button id="buscarBtn" class="btn btn-primary" type="button" onclick="buscarPropietario()">Buscar</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Propietario</label>
+                                        <div id="propietarioInfo" class="result-box">Nombre: -<br>Estado actual: -</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div id="cambioEstadoSection" hidden>
+                                        <div class="mb-3">
+                                            <label for="estadoSelect" class="form-label">Nuevo estado</label>
+                                            <select id="estadoSelect" name="nuevoEstado" class="form-select">
+                                                <option value="">Seleccione un estado...</option>
+                                                <option value="habilitado">Habilitado</option>
+                                                <option value="suspendido">Suspendido</option>
+                                                <option value="deshabilitado">Deshabilitado</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Cambiar estado</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card card-shadow">
+                    <div class="card-body">
+                        <h6 class="section-title">Información</h6>
+                        <div class="result-box">
+                            <strong>1)</strong> Ingrese la cédula del propietario y presione "Buscar".<br><br>
+                            <strong>2)</strong> Se mostrará el nombre y estado actual del propietario.<br><br>
+                            <strong>3)</strong> Seleccione el nuevo estado y confirme el cambio.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        urlIniciarVista = "/bonificacion/vistaConectada";
+
+        function mostrar_BonificacionesDisponibles(bonificaciones) {
+            console.log("Bonificaciones recibidas (no usadas en esta vista):", bonificaciones);
+        }
+
+        function mostrar_PuestosPeaje(puestos) {
+            console.log("Puestos recibidos (no usados en esta vista):", puestos);
+        }
+
+        function mostrar_Propietarios(propietarios) {
+            console.log("Propietarios recibidos (no usados en esta vista):", propietarios);
+        }
+
+        function mostrar_PropietarioInfo(info) {
+            console.log("Mostrando información del propietario:", info);
+            document.getElementById("cambioEstadoSection").hidden = false;
+            
+            const nombre = info.nombre || '-';
+            const estado = info.estado || '-';
+            document.getElementById('propietarioInfo').innerHTML = `Nombre: ${nombre}<br>Estado actual: ${estado}`;
+        }
+
+        function buscarPropietario() {
+            const cedula = document.getElementById('cedulaInput').value;
+            submit('/bonificacion/cargarBonificaciones', 'cedulaPropietario=' + encodeURIComponent(cedula), 'GET');
+        }
+
+        function cambiarEstado(event) {
+            event.preventDefault();
+            submit("/bonificacion/cambiarEstadoPropietario", serializarFormulario("cambiarEstadoForm"));
+        }
+
+        function mostrar_ResultadoCambioEstado(mensaje) {
+            console.log("Resultado cambio de estado:", mensaje);
+            mostrarMensaje(mensaje);
+            
+            // Limpiar y resetear el formulario
+            document.getElementById("cambioEstadoSection").hidden = true;
+            document.getElementById('cedulaInput').value = '';
+            document.getElementById('estadoSelect').value = '';
+            document.getElementById('propietarioInfo').innerHTML = 'Nombre: -<br>Estado actual: -';
+        }
+
+        async function procesarRespuestaSubmit(respuesta) {
+            console.log("Respuesta del submit:", respuesta);
+            await mostrarMensaje(respuesta);
+        }
+
+        async function mostrar_error(respuesta) {
+            await mostrarMensaje(respuesta);
+        }
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
