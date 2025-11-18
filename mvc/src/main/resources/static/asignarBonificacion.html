@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asignar Bonificaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 24px;
+            background: #f8f9fa
+        }
+
+        .card-shadow {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08)
+        }
+
+        .result-box {
+            white-space: pre-line;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            min-height: 60px;
+        }
+
+        .muted-small {
+            font-size: .9rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="vistaWeb.js"></script>
+    <script src="utilesVista.js"></script>
+
+    <div class="container">
+        <h3 class="mb-4">CU: Asignar bonificaciones</h3>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="card card-shadow">
+                    <div class="card-body">
+                        <h6 class="section-title">Asignar bonificaciones</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="bonificacionSelect" class="form-label">Bonificaciones definidas</label>
+                                    <select id="bonificacionSelect" name="idBonificacion" class="form-select">
+                                        <option value="">Seleccione una bonificación...</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="puestoSelect" class="form-label">Puestos definidos</label>
+                                    <select id="puestoSelect" name="puesto" class="form-select">
+                                        <option value="">Seleccione un puesto...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="cedulaInput" class="form-label">Cédula de identidad</label>
+                                    <div class="input-group">
+                                        <input id="cedulaInput" class="form-control" placeholder="Ingrese cédula" />
+                                        <button id="buscarPropietarioBtn" class="btn btn-primary" onclick="buscarPropietario()">Buscar propietario</button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Propietario</label>
+                                    <div id="propietarioInfo" class="result-box">Nombre: - <br> Estado: -</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bonificacionesSection" hidden>
+                            <div class="mb-3">
+                                <label class="form-label">Bonificaciones asignadas</label>
+                                <div id="bonificacionesAsignadas" class="result-box">
+                                    Sin bonificaciones asignadas
+                                </div>
+                            </div>
+
+                            <form id="asignarBonificacionForm" onsubmit="asignarBonificacion(event);">
+                                <input type="hidden" id="cedulaPuesto" name="cedula" />
+                                <div class="mb-3">
+                                    <label class="form-label">Datos asignación</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label for="fechaInicio" class="form-label small">Fecha inicio</label>
+                                            <input id="fechaInicio" name="fechaInicio" type="date" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="horaAsignacion" class="form-label small">Hora</label>
+                                            <input id="horaAsignacion" name="hora" type="time" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Asignar bonificación</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="muted-small mt-3">Seleccione una bonificación y un puesto en la izquierda, luego busque el propietario por cédula.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card card-shadow">
+                    <div class="card-body">
+                        <h6 class="section-title">Información y flujo</h6>
+                        <div class="result-box">
+                            <strong>1)</strong> El sistema muestra la lista de bonificaciones definidas y puestos disponibles.<br><br>
+                            <strong>2)</strong> El administrador ingresa la cédula del propietario y presiona "Buscar propietario".<br><br>
+                            <strong>3)</strong> Se muestran datos del propietario y sus bonificaciones asignadas; luego puede asignar una nueva bonificación seleccionada y fecha/hora.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        urlIniciarVista = "/bonificacion/vistaConectada";
+
+        // Mostrar lista de bonificaciones disponibles (solo las <option>, no reemplazar todo el <select>)
+        function mostrar_BonificacionesDisponibles(bonificaciones) {
+            console.log("Mostrando bonificaciones disponibles: ", bonificaciones);
+            const sel = document.getElementById("bonificacionSelect");
+            if (!sel) return;
+            let html = '<option value="">Seleccione una bonificación...</option>';
+            bonificaciones.forEach(b => {
+                const val = b.id !== undefined ? b.id : '';
+                const nombre = b.nombre !== undefined ? b.nombre : '';
+                html += `<option value="${val}">${nombre}</option>`;
+            });
+            sel.innerHTML = html;
+        }
+
+        // Mostrar lista de puestos
+        function mostrar_PuestosPeaje(puestos) {
+            console.log("Mostrando puestos: ", puestos);
+            const sel = document.getElementById("puestoSelect");
+            if (!sel) return;
+            let html = '<option value="">Seleccione un puesto...</option>';
+            puestos.forEach(p => {
+                const val = p.nombre !== undefined ? p.nombre : '';
+                const nombre = p.nombre !== undefined ? p.nombre : '';
+                html += `<option value="${val}">${nombre}</option>`;
+            });
+            sel.innerHTML = html;
+        }
+
+        // El controlador incluye la lista 'Propietarios' en la inicialización,
+        // pero esta vista ya busca propietarios por cédula; aceptar la respuesta sin error.
+        function mostrar_Propietarios(propietarios) {
+            console.log('Recibidos propietarios (no usados en esta vista):', propietarios);
+        }
+
+        // Mostrar bonificaciones asignadas al propietario
+        function mostrar_BonificacionesAsignadas(bonificaciones) {
+            console.log("Mostrando bonificaciones asignadas: ", bonificaciones);
+            const div = document.getElementById("bonificacionesAsignadas");
+            if (bonificaciones && bonificaciones.length > 0) {
+                div.innerHTML = crearTablaDesdeJson(bonificaciones);
+            } else {
+                div.innerHTML = "No hay bonificaciones asignadas";
+            }
+        }
+
+        function mostrar_PropietarioInfo(info) {
+            // info puede venir como string o como objeto
+            try {
+                if (typeof info === 'string') {
+                    document.getElementById('propietarioInfo').innerText = info;
+                    return;
+                }
+                // si es objeto con campos esperados
+                const nombre = info.nombre || '-';
+                const estado = info.estado || '-';
+                document.getElementById('propietarioInfo').innerHTML = `Nombre: ${nombre} <br> Estado: ${estado}`;
+            } catch (e) {
+                document.getElementById('propietarioInfo').innerText = info;
+            }
+        }
+
+        // Cargar bonificaciones cuando se dispone de la cédula del propietario
+        function cargarBonificaciones(cedula) {
+            const cedulaPropietario = cedula || (document.getElementById("cedulaInput") ? document.getElementById("cedulaInput").value : '');
+
+            if (!cedulaPropietario || cedulaPropietario === "") {
+                document.getElementById("bonificacionesSection").hidden = true;
+                return;
+            }
+
+            // Mostrar sección de bonificaciones
+            document.getElementById("bonificacionesSection").hidden = false;
+            document.getElementById("cedulaPuesto").value = cedulaPropietario;
+
+            // Cargar bonificaciones disponibles y asignadas
+            submit('/bonificacion/cargarBonificaciones', 'cedulaPropietario=' + encodeURIComponent(cedulaPropietario), 'GET');
+        }
+
+        // Buscar propietario por cédula (botón)
+        function buscarPropietario() {
+            const ced = document.getElementById('cedulaInput').value;
+            if (!ced || ced.trim() === '') {
+                mostrarMensaje('Ingrese una cédula válida');
+                return;
+            }
+            cargarBonificaciones(ced.trim());
+        }
+
+        // Asignar bonificación
+        function asignarBonificacion(event) {
+            event.preventDefault();
+
+            // Obtener valores de los selects (que están fuera del form)
+            const idBonificacion = document.getElementById('bonificacionSelect').value;
+            const puesto = document.getElementById('puestoSelect').value;
+            const cedula = document.getElementById('cedulaPuesto').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const hora = document.getElementById('horaAsignacion').value;
+
+            // Validaciones cliente
+            if (!idBonificacion || idBonificacion.trim() === '') {
+                mostrarMensaje('Debe especificar una bonificación');
+                return;
+            }
+            if (!puesto || puesto.trim() === '') {
+                mostrarMensaje('Debe especificar un puesto');
+                return;
+            }
+            if (!cedula || cedula.trim() === '') {
+                mostrarMensaje('Debe buscar primero el propietario (cédula)');
+                return;
+            }
+
+            // Armar el payload manualmente
+            let payload = 'cedula=' + encodeURIComponent(cedula)
+                        + '&idBonificacion=' + encodeURIComponent(idBonificacion)
+                        + '&puesto=' + encodeURIComponent(puesto);
+            
+            if (fechaInicio && fechaInicio.trim() !== '') {
+                payload += '&fechaInicio=' + encodeURIComponent(fechaInicio);
+            }
+            if (hora && hora.trim() !== '') {
+                payload += '&hora=' + encodeURIComponent(hora);
+            }
+
+            console.log("Payload enviado:", payload);
+            submit("/bonificacion/asignarBonificacion", payload);
+        }
+
+        // Mostrar resultado de asignación
+        function mostrar_ResultadoAsignacion(mensaje) {
+            console.log("Resultado de asignación: ", mensaje);
+            mostrarMensaje(mensaje);
+        }
+
+        // Alias para la respuesta del servidor al asignar
+        function mostrar_BonificacionAsignada(mensaje) {
+            mostrar_ResultadoAsignacion(mensaje);
+        }
+
+        // Procesar respuesta del submit
+        async function procesarRespuestaSubmit(respuesta) {
+            console.log("Respuesta del submit: ", respuesta);
+            await mostrarMensaje(respuesta);
+        }
+
+        async function mostrar_error(respuesta){
+            await mostrarMensaje(respuesta);
+        }
+
+        function mostrar_usuarioNoAutenticado(loginPage) {
+            console.log("Admin no autenticado. Redirigiendo a: " + loginPage);
+            window.location.href = loginPage;
+        }
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Administrador</title>
+    <script src="vistaWeb.js"></script>
+    <style>
+        /* Estilos del mockup: tarjeta centrada y botones principales */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f5f7fb;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 420px;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12);
+            padding: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .brand .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        p.lead {
+            margin: 8px 0 18px 0;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="brand">
+            <div class="logo" aria-hidden="true"></div>
+            <div>
+                <h1>Ingreso a la aplicación</h1>
+                <div style="font-size:12px;color:#64748b;">Acceso de administradores</div>
+            </div>
+        </div>
+
+        <p class="lead">Seleccione la acción administrativa que desea realizar:</p>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="irCambiarEstado()"
+                title="Cambiar el estado actual de un propietario">CU: Cambiar estado de propietario</button>
+            <button class="btn btn-secondary" onclick="irAsignarBonificaciones()" title="Asignar bonificaciones">CU:
+                Asignar bonificaciones</button>
+            <button class="btn btn-ghost" onclick="irEmularTransito()" title="Emular tránsito">CU: Emular
+                tránsito</button>
+            <button class="btn btn-danger" onclick="salir()" title="Salir de la aplicación">CU: Salir de la
+                aplicación</button>
+        </div>
+
+        <div class="footer">© 2025 - Panel de administración</div>
+    </div>
+
+    <script>
+        // Funciones de navegación: ajusta las rutas según tu backend
+        function irCambiarEstado() {
+            // Puede ser una vista que permita buscar propietario y cambiar su estado
+            window.location.href = '/administrador/cambiarEstado';
+        }
+
+        function irAsignarBonificaciones() {
+            //window.location.href = '/administrador/asignarBonificaciones';
+            window.location.href = "asignarBonificacion.html";
+        }
+
+        function irEmularTransito() {
+            // El endpoint /transito/vistaConectada espera GET, usar método GET evita 405
+            submit("/transito/vistaConectada", "", 'GET');
+        }
+
+        function mostrar_EmularTransito(respuesta) {
+            window.location.href = respuesta;
+        }
+
+
+        function salir() {
+            submit("/LoginController/AdministradorLogout", null);
+        }
+
+        function mostrar_usuarioNoAutenticado(loginPage) {
+            console.log("Admin no autenticado. Redirigiendo a: " + loginPage);
+            window.location.href = loginPage;
+        }
+
+    </script>
+</body>
+
+</html>

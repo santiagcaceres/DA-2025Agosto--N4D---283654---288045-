@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ingreso - Propietario</title>
+    <script src="vistaWeb.js"></script>
+
+    <!-- Estilos mínimos, adaptables y accesibles -->
+    <style>
+        :root{
+            --bg:#f4f6f8;
+            --card:#ffffff;
+            --accent:#0d6efd;
+            --muted:#6b7280;
+            --radius:12px;
+            --max-width:420px;
+        }
+        html,body{height:100%;}
+        body{
+            margin:0;
+            font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+            background:linear-gradient(180deg,var(--bg),#eef2f7 60%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px;
+            color:#111827;
+        }
+
+        .card{
+            width:100%;
+            max-width:var(--max-width);
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:0 6px 20px rgba(15,23,42,0.08);
+            padding:28px;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin-bottom:18px;
+        }
+        .logo{
+            width:48px;
+            height:48px;
+            border-radius:10px;
+            background:linear-gradient(135deg,var(--accent),#6c5ce7);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-weight:700;
+            font-size:18px;
+            box-shadow:0 4px 12px rgba(13,110,253,0.18);
+        }
+        h1{
+            margin:0;
+            font-size:20px;
+            letter-spacing:-0.2px;
+        }
+        p.lead{margin:6px 0 18px;color:var(--muted);font-size:13px}
+
+        form {display:grid; gap:12px;}
+        label{font-size:13px;color:#111827;margin-bottom:6px;display:block}
+        input[type="text"],
+        input[type="email"],
+        input[type="password"]{
+            width:100%;
+            padding:10px 12px;
+            border-radius:8px;
+            border:1px solid #e6e9ee;
+            background:#fff;
+            outline:none;
+            font-size:14px;
+            transition:box-shadow .12s, border-color .12s;
+        }
+        input:focus{box-shadow:0 4px 10px rgba(13,110,253,0.06);border-color:var(--accent)}
+        .row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+        .checkbox{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+        .btn{
+            background:var(--accent);
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+            font-size:14px;
+        }
+        .btn:active{transform:translateY(1px)}
+        .muted-link{font-size:13px;color:var(--muted);text-decoration:none}
+        .muted-link:hover{text-decoration:underline}
+        .foot{margin-top:10px;text-align:center;font-size:13px;color:var(--muted)}
+        .helper{display:flex;align-items:center;gap:8px}
+        .toggle-pass{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:6px}
+        .error{color:#b91c1c;font-size:13px;display:none;margin-top:6px}
+        @media (max-width:420px){body{padding:18px}}
+    </style>
+</head>
+<body>
+    <script src="utilesVista.js"></script>
+    <main class="card" role="main" aria-labelledby="loginTitle">
+        <div class="brand">
+            <div class="logo" aria-hidden="true">P</div>
+            <div>
+                <h1 id="loginTitle">Ingreso Propietario</h1>
+                <p class="lead">Accede a tu cuenta para administrar tus peajes y vehículos.</p>
+            </div>
+        </div>
+
+        <form id="loginForm" action="/accesos/Propietariologin" method="post" onsubmit="acceder(event);">
+            
+            <div>
+                <label for="ci">Cedula de identidad</label>
+                <input id="ci" name="ci" type="number" placeholder="Ingrese su cedula de identidad" required autocomplete="ci" />
+            </div>
+
+            <div>
+                <label for="contrasenia">Contraseña</label>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <input id="contrasenia" name="contrasenia" type="password" placeholder="••••••••" required autocomplete="current-contrasenia" />
+                    </div>
+            </div>
+            
+                <button class="btn" type="submit">Ingresar</button>
+
+        </form>
+            <p class="error" id="errorMsg" role="alert"></p>
+    </main>
+
+    <script>
+
+    function acceder(event) {
+        event.preventDefault();
+        submit("LoginController/Propietariologin", serializarFormulario("loginForm"));
+    }
+
+    async function mostrar_error(mensaje) {
+        await mostrarMensaje(mensaje);
+    }
+
+    function mostrar_loginExitoso(urlDestino) {
+        window.location.href = urlDestino;
+    }
+
+    async function mostrar_usuarioAutenticado(){
+        await mostrarMensaje("Ya estas logueado en el sistema, debes cerrar sesion primero.");
+        window.location.href = "TableroDeControlPropietario.html";
+    }
+
+      async function excepcionDeAplicacion(text){
+            await mostrarMensaje(text);
+        }
+    </script>
+</body>
+</html></div>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tablero de control del propietario</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f7fb;
+            padding: 24px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+        }
+
+        .header-title {
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+
+        .small-muted {
+            color: #6c757d;
+            font-size: .9rem;
+        }
+
+        .data-box {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            padding: 18px;
+            border-radius: 6px;
+        }
+
+        .table thead th {
+            background: #f1f3f5;
+        }
+
+        .btn-danger-sm {
+            padding: .35rem .6rem;
+            font-size: .85rem;
+        }
+
+        .no-notifications {
+            color: #6c757d;
+            padding: 12px;
+        }
+
+        .val-right {
+            text-align: right;
+        }
+
+        @media (max-width:767px) {
+            .val-right {
+                text-align: left;
+                margin-top: .5rem;
+            }
+        }
+    </style>
+    <script src="vistaWeb.js"></script>
+</head>
+
+<body>
+    <script src="utilesVista.js"></script>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 class="header-title">CU: Tablero de control del propietario</h3>
+                <div class="small-muted">Vista resumen y control de trámites, bonificaciones y notificaciones</div>
+            </div>
+            <div><button onclick="logout()">Salir</button></div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="card mb-4 p-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-1">Resumen del propietario</h5>
+                    <div class="row g-2">
+                        <div class="col-12 col-sm-4">
+                            <div class="data-box">
+                                <small class="small-muted">Nombre completo</small>
+                                <div class="fw-bold">
+                                    <p id="nombreCompleto"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="data-box">
+                                <small class="small-muted">Estado</small>
+                                <div class="fw-bold text-success">
+                                    <p id="estadoPropietario"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="data-box">
+                                <small class="small-muted">Saldo actual</small>
+                                <div class="fw-bold">
+                                    <p id="saldoActual"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end val-right">
+                    <img src="https://via.placeholder.com/120x60?text=Logo" alt="logo" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- Bonificaciones -->
+            <div class="col-lg-6">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Bonificaciones asignadas</h6>
+                        <small class="small-muted">Información</small>
+                    </div>
+                    <div class="table-responsive">
+                        <div id="bonificacionesTableBody"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehículos -->
+            <div class="col-lg-6">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Vehículos registrados</h6>
+                        <small class="small-muted">Información</small>
+                    </div>
+                    <div class="table-responsive">
+                        <div id="vehiculosTableBody"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tránsitos realizados -->
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Tránsitos realizados</h6>
+                        <small class="small-muted">Ordenados por fecha/hora descendente</small>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="transitosTableBody">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notificaciones -->
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Notificaciones del sistema</h6>
+                        <div>
+                            <button id="clearNotifications" class="btn btn-danger btn-sm btn-danger-sm" onclick="borrarNotificaciones()">Borrar
+                                notificaciones</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <div id="notificacionesTableBody"></div>
+                    </div>
+
+                    <div id="noNotificationsMsg" class="no-notifications d-none">
+                        No hay notificaciones para borrar
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+
+    <script>
+
+        urlIniciarVista = "/Propietario/vistaConectada";
+        urlCerrarVista = "/Propietario/vistaDesconectada";
+
+        function cargarContenido(pagina) {
+            document.getElementById('contenidoFrame').src = pagina;
+        }
+
+
+
+
+        function procesarErrorSubmit(status,text){
+            if(status==400){ //El usuario no ha iniciado sesion
+                window.location.href="index.html";
+            }
+        }
+
+        function mostrar_usuarioNoAutenticado(loginPage) {
+            console.log("Usuario desautenticado. Redirigiendo a: " + loginPage);
+            window.location.href = loginPage;
+        }
+
+
+        function mostrar_nombrePropietario(nombre) {
+            console.log("Mostrando nombre completo: " + nombre);
+            document.getElementById("nombreCompleto").innerHTML = nombre;
+        }
+
+        function mostrar_estadoPropietario(estado) {
+            console.log("Mostrando estado propietario: " + estado);
+            document.getElementById("estadoPropietario").innerHTML = estado;
+        }
+
+        function mostrar_saldoActualPropietario(saldoActual) {
+            console.log("Mostrando saldo actual: " + saldoActual);
+            document.getElementById("saldoActual").innerHTML = saldoActual;
+        }
+
+
+
+
+        function mostrar_BonificacionesPropietario(bonificaciones) {
+            console.log("Mostrando bonificaciones: ", bonificaciones);
+            document.getElementById("bonificacionesTableBody").innerHTML = crearTablaDesdeJson(bonificaciones);
+        }
+
+        function mostrar_VehiculosPropietario(vehiculos) {
+            console.log("Mostrando vehículos: ", vehiculos);
+            document.getElementById("vehiculosTableBody").innerHTML = crearTablaDesdeJson(vehiculos);
+        }
+
+        function mostrar_TransitosPropietario(transitos) {
+            console.log("Mostrando tránsitos: " + transitos);
+            document.getElementById("transitosTableBody").innerHTML = crearTablaDesdeJson(transitos);
+        }
+
+        function mostrar_NotificacionesPropietario(notificaciones) {
+            console.log("Mostrando notis: ", notificaciones);
+            document.getElementById("notificacionesTableBody").innerHTML = crearTablaDesdeJson(notificaciones);
+        }
+
+        function mostrar_notificacionesBorradas(resultado) {
+            console.log("Notificaciones borradas: ", resultado);
+            document.getElementById("notificacionesTableBody").innerHTML = resultado;
+        }
+
+
+
+        function logout() {
+            submit("/LoginController/PropietarioLogout", null);
+        }
+
+        function borrarNotificaciones() {
+            const nombreCompleto = document.getElementById("nombreCompleto").innerText;
+            submit("/Propietario/borrarNotificaciones");
+        }
+
+        async function excepcionDeAplicacion(mensaje) {
+            await mostrarMensaje(mensaje);
+        }
+
+
+    </script>
+
+</body>
+
+</html>

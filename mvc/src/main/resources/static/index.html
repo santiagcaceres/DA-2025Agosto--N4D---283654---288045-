@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sistema de Peajes — Inicio</title>
+    <style>
+        :root{
+            --bg:#f5f7fb;
+            --card:#ffffff;
+            --accent:#0078d4;
+            --muted:#6b7280;
+        }
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+            background:linear-gradient(180deg,var(--bg),#fff);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#111827;
+        }
+        .container{
+            width:100%;
+            max-width:720px;
+            padding:28px;
+            box-sizing:border-box;
+            text-align:center;
+        }
+        .card{
+            background:var(--card);
+            border-radius:12px;
+            box-shadow:0 6px 22px rgba(16,24,40,0.08);
+            padding:36px;
+        }
+        h1{margin:0 0 8px;font-size:22px}
+        p.lead{margin:0 0 20px;color:var(--muted)}
+        .choices{
+            display:flex;
+            gap:16px;
+            justify-content:center;
+            flex-wrap:wrap;
+            margin-top:8px;
+        }
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            padding:14px 18px;
+            min-width:220px;
+            border-radius:10px;
+            border:1px solid rgba(15,23,42,0.06);
+            background:linear-gradient(180deg,#fff,#f8fbff);
+            color:#0f172a;
+            text-decoration:none;
+            font-weight:600;
+            box-shadow:0 2px 8px rgba(2,6,23,0.06);
+            transition:transform .12s ease, box-shadow .12s ease;
+        }
+        .btn:hover{transform:translateY(-4px); box-shadow:0 8px 26px rgba(2,6,23,0.09)}
+        .btn.primary{
+            background:linear-gradient(180deg,var(--accent),#005bb5);
+            color:white;
+            border: none;
+        }
+        .btn svg{width:20px;height:20px;flex-shrink:0}
+        footer{margin-top:18px;color:var(--muted);font-size:13px}
+        @media (max-width:420px){
+            .btn{min-width:160px;padding:12px}
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="card" role="main" aria-labelledby="titulo">
+            <h1 id="titulo">Bienvenido al Sistema de Peajes</h1>
+            <p class="lead">Accede con tu cuenta según tu rol</p>
+
+            <div class="choices" role="navigation" aria-label="Opciones de inicio de sesión">
+                <!-- Administrador -->
+                <a class="btn primary" href="loginAdministrador.html" title="Login Administrador">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Login Administrador
+                </a>
+
+                <!-- Propietario -->
+                <a class="btn" href="loginPropietario.html" title="Login Propietario">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 21v-2a4 4 0 014-4h10a4 4 0 014 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Login Propietario
+                </a>
+            </div>
+
+            <footer>
+                Selecciona el tipo de acceso. Si tu aplicación usa rutas distintas, ajusta los enlaces a las rutas correspondientes.
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Soporte adicional: Enter abre la primera opción (útil en kioscos)
+        document.addEventListener('keydown', (e)=>{
+            if(e.key === 'Enter'){
+                const first = document.querySelector('.choices a');
+                if(first) first.click();
+            }
+        });
+    </script>
+</body>
+</html></a>
